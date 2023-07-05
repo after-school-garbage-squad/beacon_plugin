@@ -51,6 +51,7 @@ class _MyAppState extends State<MyApp> {
         yield await _beaconManager.getRangedBeacons();
       }
     })();
+    _beaconManager.startForegroundService();
   }
 
   @override
@@ -82,7 +83,7 @@ class _MyAppState extends State<MyApp> {
                               children: snapshot.data!.map((e) {
                                 final String proximity = BeaconProximity.values[e!.proximity!].toString().split('.').last;
                                 return ListTile(
-                                  title: Text("HWID: ${e.hwid}"),
+                                  title: Text("HWID: ${e.hwid ?? "Scanning..."}"),
                                   subtitle: Text("UUID: ${e.uuid}\nMajor: ${e.major}\nMinor: ${e.minor}\nRSSI: ${e.rssi}"),
                                   trailing: Text("${proximity[0].toUpperCase()}${proximity.substring(1).toLowerCase()}"),
                                 );

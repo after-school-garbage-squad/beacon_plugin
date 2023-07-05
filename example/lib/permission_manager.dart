@@ -6,7 +6,6 @@ class PermissionManager {
   static final List<Permission> _permissions = [
     Permission.bluetooth,
     Permission.bluetoothScan,
-    Permission.camera,
     Permission.location,
     Permission.locationWhenInUse,
     Permission.locationAlways,
