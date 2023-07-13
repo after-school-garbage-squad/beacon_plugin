@@ -40,7 +40,6 @@ class BeaconManager {
   /// Must explicitly branch in application code to avoid calling this method on iOS.
   Future<void> startRanging() async {
     if (_isRanging) throw Exception('Already ranging');
-    if (Platform.isIOS) throw Exception('iOS does not support manual ranging');
     await api.startRanging();
     _isRanging = true;
   }
@@ -51,7 +50,6 @@ class BeaconManager {
   /// iOS: There is no manual ranging on iOS. This method will throw an exception.
   Future<void> stopRanging() async {
     if (!_isRanging) throw Exception('Not ranging');
-    if (Platform.isIOS) throw Exception('iOS does not support manual ranging');
     await api.stopRanging();
     _isRanging = false;
   }

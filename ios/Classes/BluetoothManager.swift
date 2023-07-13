@@ -7,6 +7,7 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     var timer: Timer?
     
     let serviceUUIDs = [CBUUID(string: "FE6F")]
+    public var hwids: Array<String> = Array<String>()
     
     @Published public var isUseFilter = true
     
@@ -97,14 +98,14 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     }
      */
     
-    func sendNotification(title: String, body: String, interval: Double = 1) {
-      let content = UNMutableNotificationContent()
-      content.title = title
-      content.body = body
+  func sendNotification(title: String, body: String, interval: Double = 1) {
+    let content = UNMutableNotificationContent()
+    content.title = title
+    content.body = body
 
-      let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
-      let request = UNNotificationRequest(identifier: "notification01", content: content, trigger: trigger)
+    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
+    let request = UNNotificationRequest(identifier: "notification01", content: content, trigger: trigger)
 
-      UNUserNotificationCenter.current().add(request)
-    }
+    UNUserNotificationCenter.current().add(request)
+  }
 }

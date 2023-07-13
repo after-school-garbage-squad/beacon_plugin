@@ -11,8 +11,7 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
 
   var customLocationManager: CLLocationManager!
   var customBeaconRegion: CLBeaconRegion!
-  var beaconUuids: NSMutableArray!
-  var beaconDetails: NSMutableArray!
+  var beaconDatas: Array<BeaconData> = Array<BeaconData>()
 
   override init() {
     super.init()
@@ -31,8 +30,7 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     if status == .notDetermined {
       customLocationManager.requestAlwaysAuthorization()
     }
-    beaconUuids = NSMutableArray()
-    beaconDetails = NSMutableArray()
+    beaconDatas = Array<BeaconData>()
 
     customLocationManager.startUpdatingLocation()
 
@@ -50,6 +48,14 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
 
   public func stopCustomMonitoring() {
     customLocationManager.stopMonitoring(for: customBeaconRegion)
+  }
+    
+  public func startRanging() {
+    customLocationManager.startRangingBeacons(satisfying: constraint)
+  }
+    
+  public func stopRanging() {
+    customLocationManager.stopRangingBeacons(satisfying: constraint)
   }
 
   func locationManager(
@@ -115,8 +121,6 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     didRangeBeacons beacons: [CLBeacon],
     in region: CLBeaconRegion
   ) {
-    beaconUuids = NSMutableArray()
-    beaconDetails = NSMutableArray()
     if beacons.count > 0 {
       for i in 0..<beacons.count {
         let beacon = beacons[i]
@@ -147,13 +151,21 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
           break
         }
 
-        beaconUuids.add(beaconUUID.uuidString)
         var customBeaconDetails = "Major: \(majorID) "
         customBeaconDetails += "Minor: \(minorID) "
         customBeaconDetails += "Proximity:\(proximity) "
         customBeaconDetails += "RSSI:\(rssi)"
         print(customBeaconDetails)
-        beaconDetails.add(customBeaconDetails)
+        beaconDatas.append(
+          BeaconData(
+            uuid: beacon.uuid.uuidString,
+            major: beacon.major.stringValue,
+            minor: beacon.minor.stringValue,
+            rssi: Int64(beacon.rssi),
+            proximity: Int64(beacon.proximity.rawValue),
+            hwid: nil
+          )
+        )
         sendNotification(title: proximity, body: customBeaconDetails)
         // label1.text = proximity
       }
