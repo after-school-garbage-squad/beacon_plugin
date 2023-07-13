@@ -5,7 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 class PermissionManager {
   static final List<Permission> _permissions = [
     Permission.bluetooth,
-    Permission.bluetoothScan,
+    // Permission.bluetoothScan,
     Permission.location,
     Permission.locationWhenInUse,
     Permission.locationAlways,

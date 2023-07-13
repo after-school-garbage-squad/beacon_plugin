@@ -3,6 +3,7 @@
  */
 
 import CoreLocation
+import UserNotifications
 
 class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
   let constraint = CLBeaconIdentityConstraint(
@@ -15,8 +16,6 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
 
   override init() {
     super.init()
-
-    NotificationManager.instance.requestPermission()
 
     customLocationManager = CLLocationManager()
     customLocationManager.delegate = self
@@ -99,11 +98,11 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     case .inside:
       print("iBeacon inside")
       // manager.startRangingBeacons(satisfying: constraint)
-      NotificationManager.instance.sendNotification(title: "inside", body: region.identifier)
+      sendNotification(title: "inside", body: region.identifier)
       break
     case .outside:
       print("iBeacon outside")
-      NotificationManager.instance.sendNotification(title: "outside", body: region.identifier)
+      sendNotification(title: "outside", body: region.identifier)
       break
     case .unknown:
       print("iBeacon unknown")
@@ -155,7 +154,7 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         customBeaconDetails += "RSSI:\(rssi)"
         print(customBeaconDetails)
         beaconDetails.add(customBeaconDetails)
-        NotificationManager.instance.sendNotification(title: proximity, body: customBeaconDetails)
+        sendNotification(title: proximity, body: customBeaconDetails)
         // label1.text = proximity
       }
     }
@@ -175,5 +174,16 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
   ) {
     print("didExitRegion: iBeacon lost")
     manager.stopRangingBeacons(satisfying: constraint)
+  }
+    
+  func sendNotification(title: String, body: String, interval: Double = 1) {
+    let content = UNMutableNotificationContent()
+    content.title = title
+    content.body = body
+
+    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
+    let request = UNNotificationRequest(identifier: "notification02", content: content, trigger: trigger)
+
+    UNUserNotificationCenter.current().add(request)
   }
 }
