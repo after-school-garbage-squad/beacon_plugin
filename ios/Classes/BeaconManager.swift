@@ -11,7 +11,7 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
 
   var customLocationManager: CLLocationManager!
   var customBeaconRegion: CLBeaconRegion!
-  var beaconDatas: Array<BeaconData> = Array<BeaconData>()
+  var beaconDatas: [BeaconData] = [BeaconData]()
 
   override init() {
     super.init()
@@ -30,7 +30,7 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     if status == .notDetermined {
       customLocationManager.requestAlwaysAuthorization()
     }
-    beaconDatas = Array<BeaconData>()
+    beaconDatas = [BeaconData]()
 
     customLocationManager.startUpdatingLocation()
 
@@ -49,11 +49,11 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
   public func stopCustomMonitoring() {
     customLocationManager.stopMonitoring(for: customBeaconRegion)
   }
-    
+
   public func startRanging() {
     customLocationManager.startRangingBeacons(satisfying: constraint)
   }
-    
+
   public func stopRanging() {
     customLocationManager.stopRangingBeacons(satisfying: constraint)
   }
@@ -187,14 +187,15 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     print("didExitRegion: iBeacon lost")
     manager.stopRangingBeacons(satisfying: constraint)
   }
-    
+
   func sendNotification(title: String, body: String, interval: Double = 1) {
     let content = UNMutableNotificationContent()
     content.title = title
     content.body = body
 
     let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
-    let request = UNNotificationRequest(identifier: "notification02", content: content, trigger: trigger)
+    let request = UNNotificationRequest(
+      identifier: "notification02", content: content, trigger: trigger)
 
     UNUserNotificationCenter.current().add(request)
   }

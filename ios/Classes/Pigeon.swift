@@ -2,12 +2,13 @@
 // See also: https://pub.dev/packages/pigeon
 
 import Foundation
+
 #if os(iOS)
-import Flutter
+  import Flutter
 #elseif os(macOS)
-import FlutterMacOS
+  import FlutterMacOS
 #else
-#error("Unsupported platform.")
+  #error("Unsupported platform.")
 #endif
 
 private func wrapResult(_ result: Any?) -> [Any?] {
@@ -19,13 +20,13 @@ private func wrapError(_ error: Any) -> [Any?] {
     return [
       flutterError.code,
       flutterError.message,
-      flutterError.details
+      flutterError.details,
     ]
   }
   return [
     "\(error)",
     "\(type(of: error))",
-    "Stacktrace: \(Thread.callStackSymbols)"
+    "Stacktrace: \(Thread.callStackSymbols)",
   ]
 }
 
@@ -47,8 +48,10 @@ struct BeaconData {
     let uuid: String? = nilOrValue(list[0])
     let major: String? = nilOrValue(list[1])
     let minor: String? = nilOrValue(list[2])
-    let rssi: Int64? = list[3] is NSNull ? nil : (list[3] is Int64? ? list[3] as! Int64? : Int64(list[3] as! Int32))
-    let proximity: Int64? = list[4] is NSNull ? nil : (list[4] is Int64? ? list[4] as! Int64? : Int64(list[4] as! Int32))
+    let rssi: Int64? =
+      list[3] is NSNull ? nil : (list[3] is Int64? ? list[3] as! Int64? : Int64(list[3] as! Int32))
+    let proximity: Int64? =
+      list[4] is NSNull ? nil : (list[4] is Int64? ? list[4] as! Int64? : Int64(list[4] as! Int32))
     let hwid: String? = nilOrValue(list[5])
 
     return BeaconData(
@@ -83,7 +86,8 @@ struct RegionData {
     let uuid: String? = nilOrValue(list[0])
     let major: String? = nilOrValue(list[1])
     let minor: String? = nilOrValue(list[2])
-    let state: Int64? = list[3] is NSNull ? nil : (list[3] is Int64? ? list[3] as! Int64? : Int64(list[3] as! Int32))
+    let state: Int64? =
+      list[3] is NSNull ? nil : (list[3] is Int64? ? list[3] as! Int64? : Int64(list[3] as! Int32))
 
     return RegionData(
       uuid: uuid,
@@ -105,12 +109,12 @@ struct RegionData {
 private class BeaconManagerApiCodecReader: FlutterStandardReader {
   override func readValue(ofType type: UInt8) -> Any? {
     switch type {
-      case 128:
-        return BeaconData.fromList(self.readValue() as! [Any?])
-      case 129:
-        return RegionData.fromList(self.readValue() as! [Any?])
-      default:
-        return super.readValue(ofType: type)
+    case 128:
+      return BeaconData.fromList(self.readValue() as! [Any?])
+    case 129:
+      return RegionData.fromList(self.readValue() as! [Any?])
+    default:
+      return super.readValue(ofType: type)
     }
   }
 }
@@ -161,120 +165,136 @@ class BeaconManagerApiSetup {
   static var codec: FlutterStandardMessageCodec { BeaconManagerApiCodec.shared }
   /// Sets up an instance of `BeaconManagerApi` to handle messages through the `binaryMessenger`.
   static func setUp(binaryMessenger: FlutterBinaryMessenger, api: BeaconManagerApi?) {
-    let startMonitoringChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.BeaconManagerApi.startMonitoring", binaryMessenger: binaryMessenger, codec: codec)
+    let startMonitoringChannel = FlutterBasicMessageChannel(
+      name: "dev.flutter.pigeon.BeaconManagerApi.startMonitoring", binaryMessenger: binaryMessenger,
+      codec: codec)
     if let api = api {
       startMonitoringChannel.setMessageHandler { _, reply in
-        api.startMonitoring() { result in
+        api.startMonitoring { result in
           switch result {
-            case .success:
-              reply(wrapResult(nil))
-            case .failure(let error):
-              reply(wrapError(error))
+          case .success:
+            reply(wrapResult(nil))
+          case .failure(let error):
+            reply(wrapError(error))
           }
         }
       }
     } else {
       startMonitoringChannel.setMessageHandler(nil)
     }
-    let stopMonitoringChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.BeaconManagerApi.stopMonitoring", binaryMessenger: binaryMessenger, codec: codec)
+    let stopMonitoringChannel = FlutterBasicMessageChannel(
+      name: "dev.flutter.pigeon.BeaconManagerApi.stopMonitoring", binaryMessenger: binaryMessenger,
+      codec: codec)
     if let api = api {
       stopMonitoringChannel.setMessageHandler { _, reply in
-        api.stopMonitoring() { result in
+        api.stopMonitoring { result in
           switch result {
-            case .success:
-              reply(wrapResult(nil))
-            case .failure(let error):
-              reply(wrapError(error))
+          case .success:
+            reply(wrapResult(nil))
+          case .failure(let error):
+            reply(wrapError(error))
           }
         }
       }
     } else {
       stopMonitoringChannel.setMessageHandler(nil)
     }
-    let getMonitoredRegionChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.BeaconManagerApi.getMonitoredRegion", binaryMessenger: binaryMessenger, codec: codec)
+    let getMonitoredRegionChannel = FlutterBasicMessageChannel(
+      name: "dev.flutter.pigeon.BeaconManagerApi.getMonitoredRegion",
+      binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       getMonitoredRegionChannel.setMessageHandler { _, reply in
-        api.getMonitoredRegion() { result in
+        api.getMonitoredRegion { result in
           switch result {
-            case .success(let res):
-              reply(wrapResult(res))
-            case .failure(let error):
-              reply(wrapError(error))
+          case .success(let res):
+            reply(wrapResult(res))
+          case .failure(let error):
+            reply(wrapError(error))
           }
         }
       }
     } else {
       getMonitoredRegionChannel.setMessageHandler(nil)
     }
-    let startRangingChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.BeaconManagerApi.startRanging", binaryMessenger: binaryMessenger, codec: codec)
+    let startRangingChannel = FlutterBasicMessageChannel(
+      name: "dev.flutter.pigeon.BeaconManagerApi.startRanging", binaryMessenger: binaryMessenger,
+      codec: codec)
     if let api = api {
       startRangingChannel.setMessageHandler { _, reply in
-        api.startRanging() { result in
+        api.startRanging { result in
           switch result {
-            case .success:
-              reply(wrapResult(nil))
-            case .failure(let error):
-              reply(wrapError(error))
+          case .success:
+            reply(wrapResult(nil))
+          case .failure(let error):
+            reply(wrapError(error))
           }
         }
       }
     } else {
       startRangingChannel.setMessageHandler(nil)
     }
-    let stopRangingChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.BeaconManagerApi.stopRanging", binaryMessenger: binaryMessenger, codec: codec)
+    let stopRangingChannel = FlutterBasicMessageChannel(
+      name: "dev.flutter.pigeon.BeaconManagerApi.stopRanging", binaryMessenger: binaryMessenger,
+      codec: codec)
     if let api = api {
       stopRangingChannel.setMessageHandler { _, reply in
-        api.stopRanging() { result in
+        api.stopRanging { result in
           switch result {
-            case .success:
-              reply(wrapResult(nil))
-            case .failure(let error):
-              reply(wrapError(error))
+          case .success:
+            reply(wrapResult(nil))
+          case .failure(let error):
+            reply(wrapError(error))
           }
         }
       }
     } else {
       stopRangingChannel.setMessageHandler(nil)
     }
-    let getRangedBeaconsChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.BeaconManagerApi.getRangedBeacons", binaryMessenger: binaryMessenger, codec: codec)
+    let getRangedBeaconsChannel = FlutterBasicMessageChannel(
+      name: "dev.flutter.pigeon.BeaconManagerApi.getRangedBeacons",
+      binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       getRangedBeaconsChannel.setMessageHandler { _, reply in
-        api.getRangedBeacons() { result in
+        api.getRangedBeacons { result in
           switch result {
-            case .success(let res):
-              reply(wrapResult(res))
-            case .failure(let error):
-              reply(wrapError(error))
+          case .success(let res):
+            reply(wrapResult(res))
+          case .failure(let error):
+            reply(wrapError(error))
           }
         }
       }
     } else {
       getRangedBeaconsChannel.setMessageHandler(nil)
     }
-    let startForegroundServiceChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.BeaconManagerApi.startForegroundService", binaryMessenger: binaryMessenger, codec: codec)
+    let startForegroundServiceChannel = FlutterBasicMessageChannel(
+      name: "dev.flutter.pigeon.BeaconManagerApi.startForegroundService",
+      binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       startForegroundServiceChannel.setMessageHandler { _, reply in
-        api.startForegroundService() { result in
+        api.startForegroundService { result in
           switch result {
-            case .success:
-              reply(wrapResult(nil))
-            case .failure(let error):
-              reply(wrapError(error))
+          case .success:
+            reply(wrapResult(nil))
+          case .failure(let error):
+            reply(wrapError(error))
           }
         }
       }
     } else {
       startForegroundServiceChannel.setMessageHandler(nil)
     }
-    let stopForegroundServiceChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.BeaconManagerApi.stopForegroundService", binaryMessenger: binaryMessenger, codec: codec)
+    let stopForegroundServiceChannel = FlutterBasicMessageChannel(
+      name: "dev.flutter.pigeon.BeaconManagerApi.stopForegroundService",
+      binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       stopForegroundServiceChannel.setMessageHandler { _, reply in
-        api.stopForegroundService() { result in
+        api.stopForegroundService { result in
           switch result {
-            case .success:
-              reply(wrapResult(nil))
-            case .failure(let error):
-              reply(wrapError(error))
+          case .success:
+            reply(wrapResult(nil))
+          case .failure(let error):
+            reply(wrapError(error))
           }
         }
       }
