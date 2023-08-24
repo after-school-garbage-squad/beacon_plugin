@@ -2,12 +2,17 @@ import CoreLocation
 import CoreBluetooth
 import Flutter
 
-class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate
+class BeaconManager: NSObject, ObservableObject, CBCentralManagerDelegate
 {
   var beaconServiceUUIDs: [CBUUID] = []
   var wantScan = false
 
-  let centralManager = CBCentralManager()
+  var centralManager: CBCentralManager!
+
+  override init() {
+    super.init()
+    centralManager = CBCentralManager(delegate: self, queue: nil)
+  }
 
   func setBeaconServiceUUIDs(beaconServiceUUIDs: [String]) {
     self.beaconServiceUUIDs = beaconServiceUUIDs.map { CBUUID(string: $0) }
@@ -51,8 +56,6 @@ class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate
             }
         }
 
-        BeaconPlugin.flutterBeaconApi?.onScanned(beaconDataList: beaconDataList) {
-            // do nothing
-        }
+        BeaconPlugin.flutterBeaconApi?.onScanned(beaconDataList: beaconDataList){}
     }
 }
