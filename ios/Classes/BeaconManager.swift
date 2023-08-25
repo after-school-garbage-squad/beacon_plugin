@@ -40,20 +40,16 @@ class BeaconManager: NSObject, ObservableObject, CBCentralManagerDelegate {
     _ central: CBCentralManager, didDiscover peripheral: CBPeripheral,
     advertisementData: [String: Any], rssi rssi: NSNumber
   ) {
-    // TODO: Refactor
-
     var beaconDataList: [BeaconData] = []
+    let frameType = data[0]
     if let serviceData = advertisementData[CBAdvertisementDataServiceDataKey] as? [CBUUID: Data] {
       for (serviceUUID, data) in serviceData {
         for uuid in beaconServiceUUIDs {
-          if serviceUUID == uuid {
-            let frameType = data[0]
-            if frameType == 0x02 {
-              let hwid = data.subdata(in: 1..<6)
-              let hwidStr = hwid.map { String(format: "%02X", $0) }.joined()
-              if let beaconData = BeaconData.fromList([uuid.uuidString, hwidStr, rssi]) {
-                beaconDataList.append(beaconData)
-              }
+          if serviceUUID == uuid && frameType == 0x02 {
+            let hwid = data.subdata(in: 1..<6)
+            let hwidStr = hwid.map { String(format: "%02X", $0) }.joined()
+            if let beaconData = BeaconData.fromList([uuid.uuidString, hwidStr, rssi]) {
+              beaconDataList.append(beaconData)
             }
           }
         }

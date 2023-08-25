@@ -51,7 +51,8 @@ class BeaconManagerApi {
 
   Future<void> setBeaconServiceUUIDs(List<String?> arg_uuid) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.setBeaconServiceUUIDs', codec,
+        'dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.setBeaconServiceUUIDs',
+        codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
         await channel.send(<Object?>[arg_uuid]) as List<Object?>?;
@@ -75,8 +76,7 @@ class BeaconManagerApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.startScan', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -97,8 +97,7 @@ class BeaconManagerApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.stopScan', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -131,7 +130,7 @@ class _FlutterBeaconApiCodec extends StandardMessageCodec {
   @override
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
-      case 128: 
+      case 128:
         return BeaconData.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -154,9 +153,10 @@ abstract class FlutterBeaconApi {
       } else {
         channel.setMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.beacon_plugin.FlutterBeaconApi.onScanned was null.');
+              'Argument for dev.flutter.pigeon.beacon_plugin.FlutterBeaconApi.onScanned was null.');
           final List<Object?> args = (message as List<Object?>?)!;
-          final List<BeaconData?>? arg_beaconDataList = (args[0] as List<Object?>?)?.cast<BeaconData?>();
+          final List<BeaconData?>? arg_beaconDataList =
+              (args[0] as List<Object?>?)?.cast<BeaconData?>();
           assert(arg_beaconDataList != null,
               'Argument for dev.flutter.pigeon.beacon_plugin.FlutterBeaconApi.onScanned was null, expected non-null List<BeaconData?>.');
           api.onScanned(arg_beaconDataList!);
