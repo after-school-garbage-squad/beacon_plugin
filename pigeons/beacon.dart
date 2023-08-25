@@ -3,6 +3,7 @@ import 'package:pigeon/pigeon.dart';
 class BeaconData {
   String? serviceUUID;
   String? hwid;
+  double? rssi;
 }
 
 @HostApi()

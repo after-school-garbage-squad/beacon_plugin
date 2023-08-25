@@ -4,7 +4,7 @@ public class BeaconPlugin: NSObject, FlutterPlugin, BeaconManagerApi {
 
   let beaconManager = BeaconManager()
   static var flutterBeaconApi: FlutterBeaconApi? = nil
-  
+
   func setBeaconServiceUUIDs(uuid: [String], completion: @escaping (Result<Void, Error>) -> Void) {
     completion(Result.success(beaconManager.setBeaconServiceUUIDs(beaconServiceUUIDs: uuid)))
   }

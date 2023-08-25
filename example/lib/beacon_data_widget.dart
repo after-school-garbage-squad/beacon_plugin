@@ -12,15 +12,10 @@ class BeaconDataWidget extends StatelessWidget {
       return Column(
         children: beaconDataList.map((beaconData) {
           return Card(
-            child: Column(
-              children: [
-                Text(beaconData.serviceUUID ?? "serviceUUID",
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                Text(beaconData.hwid ?? "hwid"),
-              ],
-            ),
-          );
+              child: ListTile(
+                  title: Text("HWID: ${beaconData.hwid ?? "Scanning..."}"),
+                  subtitle: Text(
+                      "ServiceUUID: ${beaconData.serviceUUID}\nrssi: ${beaconData.rssi}")));
         }).toList(),
       );
     });

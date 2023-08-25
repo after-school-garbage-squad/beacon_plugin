@@ -12,16 +12,20 @@ class BeaconData {
   BeaconData({
     this.serviceUUID,
     this.hwid,
+    this.rssi,
   });
 
   String? serviceUUID;
 
   String? hwid;
 
+  double? rssi;
+
   Object encode() {
     return <Object?>[
       serviceUUID,
       hwid,
+      rssi,
     ];
   }
 
@@ -30,6 +34,7 @@ class BeaconData {
     return BeaconData(
       serviceUUID: result[0] as String?,
       hwid: result[1] as String?,
+      rssi: result[2] as double?,
     );
   }
 }

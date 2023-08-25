@@ -39,20 +39,24 @@ private func nilOrValue<T>(_ value: Any?) -> T? {
 struct BeaconData {
   var serviceUUID: String? = nil
   var hwid: String? = nil
+  var rssi: Double? = nil
 
   static func fromList(_ list: [Any?]) -> BeaconData? {
     let serviceUUID: String? = nilOrValue(list[0])
     let hwid: String? = nilOrValue(list[1])
+    let rssi: Double? = nilOrValue(list[2])
 
     return BeaconData(
       serviceUUID: serviceUUID,
-      hwid: hwid
+      hwid: hwid,
+      rssi: rssi
     )
   }
   func toList() -> [Any?] {
     return [
       serviceUUID,
       hwid,
+      rssi,
     ]
   }
 }
