@@ -2,13 +2,12 @@
 // See also: https://pub.dev/packages/pigeon
 
 import Foundation
-
 #if os(iOS)
-  import Flutter
+import Flutter
 #elseif os(macOS)
-  import FlutterMacOS
+import FlutterMacOS
 #else
-  #error("Unsupported platform.")
+#error("Unsupported platform.")
 #endif
 
 private func wrapResult(_ result: Any?) -> [Any?] {
@@ -20,13 +19,13 @@ private func wrapError(_ error: Any) -> [Any?] {
     return [
       flutterError.code,
       flutterError.message,
-      flutterError.details,
+      flutterError.details
     ]
   }
   return [
     "\(error)",
     "\(type(of: error))",
-    "Stacktrace: \(Thread.callStackSymbols)",
+    "Stacktrace: \(Thread.callStackSymbols)"
   ]
 }
 
@@ -73,53 +72,47 @@ class BeaconManagerApiSetup {
   /// The codec used by BeaconManagerApi.
   /// Sets up an instance of `BeaconManagerApi` to handle messages through the `binaryMessenger`.
   static func setUp(binaryMessenger: FlutterBinaryMessenger, api: BeaconManagerApi?) {
-    let setBeaconServiceUUIDsChannel = FlutterBasicMessageChannel(
-      name: "dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.setBeaconServiceUUIDs",
-      binaryMessenger: binaryMessenger)
+    let setBeaconServiceUUIDsChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.setBeaconServiceUUIDs", binaryMessenger: binaryMessenger)
     if let api = api {
       setBeaconServiceUUIDsChannel.setMessageHandler { message, reply in
         let args = message as! [Any?]
         let uuidArg = args[0] as! [String]
         api.setBeaconServiceUUIDs(uuid: uuidArg) { result in
           switch result {
-          case .success:
-            reply(wrapResult(nil))
-          case .failure(let error):
-            reply(wrapError(error))
+            case .success:
+              reply(wrapResult(nil))
+            case .failure(let error):
+              reply(wrapError(error))
           }
         }
       }
     } else {
       setBeaconServiceUUIDsChannel.setMessageHandler(nil)
     }
-    let startScanChannel = FlutterBasicMessageChannel(
-      name: "dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.startScan",
-      binaryMessenger: binaryMessenger)
+    let startScanChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.startScan", binaryMessenger: binaryMessenger)
     if let api = api {
       startScanChannel.setMessageHandler { _, reply in
-        api.startScan { result in
+        api.startScan() { result in
           switch result {
-          case .success:
-            reply(wrapResult(nil))
-          case .failure(let error):
-            reply(wrapError(error))
+            case .success:
+              reply(wrapResult(nil))
+            case .failure(let error):
+              reply(wrapError(error))
           }
         }
       }
     } else {
       startScanChannel.setMessageHandler(nil)
     }
-    let stopScanChannel = FlutterBasicMessageChannel(
-      name: "dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.stopScan",
-      binaryMessenger: binaryMessenger)
+    let stopScanChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.stopScan", binaryMessenger: binaryMessenger)
     if let api = api {
       stopScanChannel.setMessageHandler { _, reply in
-        api.stopScan { result in
+        api.stopScan() { result in
           switch result {
-          case .success:
-            reply(wrapResult(nil))
-          case .failure(let error):
-            reply(wrapError(error))
+            case .success:
+              reply(wrapResult(nil))
+            case .failure(let error):
+              reply(wrapError(error))
           }
         }
       }
@@ -131,10 +124,10 @@ class BeaconManagerApiSetup {
 private class FlutterBeaconApiCodecReader: FlutterStandardReader {
   override func readValue(ofType type: UInt8) -> Any? {
     switch type {
-    case 128:
-      return BeaconData.fromList(self.readValue() as! [Any?])
-    default:
-      return super.readValue(ofType: type)
+      case 128:
+        return BeaconData.fromList(self.readValue() as! [Any?])
+      default:
+        return super.readValue(ofType: type)
     }
   }
 }
@@ -167,16 +160,14 @@ class FlutterBeaconApiCodec: FlutterStandardMessageCodec {
 /// Generated class from Pigeon that represents Flutter messages that can be called from Swift.
 class FlutterBeaconApi {
   private let binaryMessenger: FlutterBinaryMessenger
-  init(binaryMessenger: FlutterBinaryMessenger) {
+  init(binaryMessenger: FlutterBinaryMessenger){
     self.binaryMessenger = binaryMessenger
   }
   var codec: FlutterStandardMessageCodec {
     return FlutterBeaconApiCodec.shared
   }
   func onScanned(beaconDataList beaconDataListArg: [BeaconData], completion: @escaping () -> Void) {
-    let channel = FlutterBasicMessageChannel(
-      name: "dev.flutter.pigeon.beacon_plugin.FlutterBeaconApi.onScanned",
-      binaryMessenger: binaryMessenger, codec: codec)
+    let channel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.beacon_plugin.FlutterBeaconApi.onScanned", binaryMessenger: binaryMessenger, codec: codec)
     channel.sendMessage([beaconDataListArg] as [Any?]) { _ in
       completion()
     }
