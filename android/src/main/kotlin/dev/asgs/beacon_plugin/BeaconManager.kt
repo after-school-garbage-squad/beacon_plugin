@@ -1,13 +1,12 @@
 package dev.asgs.beacon_plugin
 
 import BeaconData
-import BeaconManagerApi
-import FlutterBeaconApi
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import android.os.RemoteException
+import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -19,13 +18,14 @@ import org.altbeacon.beacon.Region
 import org.altbeacon.beacon.service.scanner.NonBeaconLeScanCallback
 
 @RequiresApi(Build.VERSION_CODES.O)
-class BeaconManagerApiImpl(
+class BeaconManager(
     context: Context
-) : BeaconManagerApi {
-
+) {
     private var beaconServiceUUIDs: List<String>? = null
 
     private val beaconManager = BeaconManager.getInstanceForApplication(context)
+
+    private val handler = Handler(Looper.getMainLooper())
 
     init {
         beaconManager.beaconParsers.clear()
@@ -41,7 +41,9 @@ class BeaconManagerApiImpl(
                         rssi.toDouble()
                     )
                     Log.d(TAG, "NonBeaconLeScan.  Device=$device rssi=$rssi hwid=$hwid")
-                    flutterBeaconApi?.onScanned(listOf(beaconData)){}
+                    handler.post {
+                        BeaconPlugin.flutterBeaconApi.onScanned(listOf(beaconData)) {}
+                    }
                 }
             }
 
@@ -66,26 +68,18 @@ class BeaconManagerApiImpl(
         }
     }
 
-    override fun setBeaconServiceUUIDs(uuid: List<String>, callback: (Result<Unit>) -> Unit) {
+    fun setBeaconServiceUUIDs(uuid: List<String>) {
         beaconServiceUUIDs = uuid
     }
 
-    override  fun startScan(callback: (Result<Unit>) -> Unit) {
+    fun startScan() {
         Log.d(TAG, "startScan")
-        try {
-            callback(Result.success(beaconManager.startRangingBeacons(region)))
-        } catch (e: RemoteException) {
-            callback(Result.failure(e))
-        }
+        beaconManager.startRangingBeacons(region)
     }
 
-    override fun stopScan(callback: (Result<Unit>) -> Unit) {
+    fun stopScan() {
         Log.d(TAG, "stopScan")
-        try{
-            callback(Result.success(beaconManager.stopRangingBeacons(region)))
-        } catch (e: RemoteException) {
-            callback(Result.failure(e))
-        }
+        beaconManager.stopRangingBeacons(region)
     }
 
     companion object {
@@ -100,8 +94,6 @@ class BeaconManagerApiImpl(
             Identifier.parse("0x4C49"),
             Identifier.parse("0x4E45")
         )
-
-        var flutterBeaconApi: FlutterBeaconApi? = null
 
         private var notificationManager: NotificationManager? = null
         private var foregroundBetweenScanPeriod: Int? = null

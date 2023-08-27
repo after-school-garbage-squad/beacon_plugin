@@ -3,7 +3,7 @@ package dev.asgs.beacon_plugin_example
 import android.app.NotificationManager
 import android.content.Context
 import androidx.multidex.MultiDex
-import dev.asgs.beacon_plugin.BeaconManagerApiImpl
+import dev.asgs.beacon_plugin.BeaconManager
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 
@@ -16,7 +16,7 @@ class MainActivity: FlutterActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
-        BeaconManagerApiImpl.setupNotification(
+        BeaconManager.setupNotification(
             notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager,
             notificationId = 777,
             notificationChannelId = "beacon_plugin_example",
