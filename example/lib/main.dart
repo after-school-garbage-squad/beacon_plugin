@@ -28,6 +28,8 @@ class _MyAppState extends State<MyApp> {
   bool _isPermissionGranted = false;
   bool _isScanning = false;
 
+  final _beaconDict = <String, BeaconVisibleData>{};
+
   @override
   void initState() {
     super.initState();
@@ -41,11 +43,13 @@ class _MyAppState extends State<MyApp> {
             .every((element) => element == PermissionStatus.granted);
       });
     });
-    _beaconDataListController.setBeaconDataList([
-      BeaconData(
+    _beaconDataListController.setBeaconDataList([BeaconVisibleData(
+      beaconData:BeaconData(
         serviceUUID: "example service uuid",
         hwid: "example hwid",
-      )
+      ),
+        lastScanned: DateTime.now()
+    )
     ]);
     _beaconManager.setBeaconServiceUUIDs(["FE6F"]);
     FlutterBeaconApi.setup(FlutterBeaconApiImpl(onScanned));
@@ -54,7 +58,8 @@ class _MyAppState extends State<MyApp> {
 
   void onScanned(List<BeaconData?> beaconDataList) {
     final List<BeaconData> bl = beaconDataList.whereType<BeaconData>().toList();
-    _beaconDataListController.setBeaconDataList(bl);
+    for (var element in bl) {if (element.hwid != null) _beaconDict[element.hwid!] = BeaconVisibleData(beaconData: element, lastScanned: DateTime.now());}
+    _beaconDataListController.setBeaconDataList(_beaconDict.values.toList());
   }
 
   @override
@@ -67,8 +72,8 @@ class _MyAppState extends State<MyApp> {
             create: (_) => _beaconDataListController,
             child: Scaffold(
                 body: CustomScrollView(slivers: [
-              SliverAppBar.large(
-                title: const Text('Beacon Plugin Example'),
+              const SliverAppBar.large(
+                title: Text('Beacon Plugin Example'),
               ),
               SliverFillRemaining(
                   child: Column(children: [

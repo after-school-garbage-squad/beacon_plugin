@@ -41,9 +41,9 @@ class BeaconManager: NSObject, ObservableObject, CBCentralManagerDelegate {
     advertisementData: [String: Any], rssi rssi: NSNumber
   ) {
     var beaconDataList: [BeaconData] = []
-    let frameType = data[0]
     if let serviceData = advertisementData[CBAdvertisementDataServiceDataKey] as? [CBUUID: Data] {
       for (serviceUUID, data) in serviceData {
+        let frameType = data[0]
         for uuid in beaconServiceUUIDs {
           if serviceUUID == uuid && frameType == 0x02 {
             let hwid = data.subdata(in: 1..<6)
