@@ -22,9 +22,10 @@ class BeaconManager(
     context: Context
 ) {
     private var beaconServiceUUIDs: List<String>? = null
+    private var isScanning = false
+
 
     private val beaconManager = BeaconManager.getInstanceForApplication(context)
-
     private val handler = Handler(Looper.getMainLooper())
 
     init {
@@ -70,16 +71,42 @@ class BeaconManager(
 
     fun setBeaconServiceUUIDs(uuid: List<String>) {
         beaconServiceUUIDs = uuid
+        if(isScanning) {
+            stopScanning()
+            startScanning()
+        }
     }
 
     fun startScanning() {
         Log.d(TAG, "startScanning")
-        beaconManager.startRangingBeacons(region)
+        isScanning = true
+        val regions = beaconServiceUUIDs?.map {
+            Region(
+                it,
+                Identifier.parse(it),
+                null,
+                null
+            )
+        } ?: listOf()
+        for(region in regions) {
+            beaconManager.startRangingBeacons(region)
+        }
     }
 
     fun stopScanning() {
         Log.d(TAG, "stopScanning")
-        beaconManager.stopRangingBeacons(region)
+        isScanning = false
+        val regions = beaconServiceUUIDs?.map {
+            Region(
+                it,
+                Identifier.parse(it),
+                null,
+                null
+            )
+        } ?: listOf()
+        for(region in regions) {
+            beaconManager.startRangingBeacons(region)
+        }
     }
 
     companion object {
@@ -87,13 +114,6 @@ class BeaconManager(
 
         val iBeaconParser: BeaconParser =
             BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24")
-
-        val region = Region(
-            "LINEBeacon",
-            Identifier.parse("D0D2CE24-9EFC-11E5-82C4-1C6A7A17EF38"),
-            Identifier.parse("0x4C49"),
-            Identifier.parse("0x4E45")
-        )
 
         private var notificationManager: NotificationManager? = null
         private var foregroundBetweenScanPeriod: Int? = null
