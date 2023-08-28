@@ -58,7 +58,16 @@ class _MyAppState extends State<MyApp> {
 
   void onScanned(List<BeaconData?> beaconDataList) {
     final List<BeaconData> bl = beaconDataList.whereType<BeaconData>().toList();
-    for (var element in bl) {if (element.hwid != null) _beaconDict[element.hwid!] = BeaconVisibleData(beaconData: element, lastScanned: DateTime.now());}
+    for (var element in bl) {
+      if (element.hwid != null) {
+        _beaconDict[element.hwid!] = BeaconVisibleData(
+            beaconData: element,
+            lastScanned: DateTime.now(),
+            rssiHistory: [element.rssi!,...?_beaconDict[element.hwid!]?.rssiHistory].take(20).toList()
+        );
+      }
+    }
+
     _beaconDataListController.setBeaconDataList(_beaconDict.values.toList());
   }
 
@@ -76,8 +85,8 @@ class _MyAppState extends State<MyApp> {
                 title: Text('Beacon Plugin Example'),
               ),
               SliverFillRemaining(
-                  child: Column(children: [
-                BeaconDataWidget(),
+                  child: SingleChildScrollView(child:Column(children: [
+                const BeaconDataWidget(),
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Row(
@@ -121,7 +130,7 @@ class _MyAppState extends State<MyApp> {
                                         },
                                         child: const Text("Grant permissions")))
                               ]))
-              ])),
+              ]))),
             ]))));
   }
 }
