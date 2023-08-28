@@ -25,7 +25,7 @@ class BeaconManager: NSObject, ObservableObject, CBCentralManagerDelegate {
   }
 
   func stopScanning() {
-    centralManager.stopScanning()
+    centralManager.stopScan()
   }
 
   func centralManagerDidUpdateState(_ central: CBCentralManager) {
