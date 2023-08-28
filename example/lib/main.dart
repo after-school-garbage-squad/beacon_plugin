@@ -43,13 +43,13 @@ class _MyAppState extends State<MyApp> {
             .every((element) => element == PermissionStatus.granted);
       });
     });
-    _beaconDataListController.setBeaconDataList([BeaconVisibleData(
-      beaconData:BeaconData(
-        serviceUUID: "example service uuid",
-        hwid: "example hwid",
-      ),
-        lastScanned: DateTime.now()
-    )
+    _beaconDataListController.setBeaconDataList([
+      BeaconVisibleData(
+          beaconData: BeaconData(
+            serviceUUID: "example service uuid",
+            hwid: "example hwid",
+          ),
+          lastScanned: DateTime.now())
     ]);
     _beaconManager.setBeaconServiceUUIDs(["FE6F"]);
     FlutterBeaconApi.setup(FlutterBeaconApiImpl(onScanned));
@@ -63,8 +63,10 @@ class _MyAppState extends State<MyApp> {
         _beaconDict[element.hwid!] = BeaconVisibleData(
             beaconData: element,
             lastScanned: DateTime.now(),
-            rssiHistory: [element.rssi!,...?_beaconDict[element.hwid!]?.rssiHistory].take(20).toList()
-        );
+            rssiHistory: [
+              element.rssi!,
+              ...?_beaconDict[element.hwid!]?.rssiHistory
+            ].take(20).toList());
       }
     }
 
@@ -85,7 +87,8 @@ class _MyAppState extends State<MyApp> {
                 title: Text('Beacon Plugin Example'),
               ),
               SliverFillRemaining(
-                  child: SingleChildScrollView(child:Column(children: [
+                  child: SingleChildScrollView(
+                      child: Column(children: [
                 const BeaconDataWidget(),
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -98,12 +101,13 @@ class _MyAppState extends State<MyApp> {
                                     child: FilledButton.tonal(
                                         onPressed: () async {
                                           if (_isScanning) {
-                                            await _beaconManager.stopScan();
+                                            await _beaconManager.stopScanning();
                                             setState(() {
                                               _isScanning = false;
                                             });
                                           } else {
-                                            await _beaconManager.startScan();
+                                            await _beaconManager
+                                                .startScanning();
                                             setState(() {
                                               _isScanning = true;
                                             });

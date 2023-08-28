@@ -9,12 +9,12 @@ public class BeaconPlugin: NSObject, FlutterPlugin, BeaconManagerApi {
     completion(Result.success(beaconManager.setBeaconServiceUUIDs(beaconServiceUUIDs: uuid)))
   }
 
-  func startScan(completion: @escaping (Result<Void, Error>) -> Void) {
-    completion(Result.success(beaconManager.startScan()))
+  func startScanning(completion: @escaping (Result<Void, Error>) -> Void) {
+    completion(Result.success(beaconManager.startScanning()))
   }
 
-  func stopScan(completion: @escaping (Result<Void, Error>) -> Void) {
-    completion(Result.success(beaconManager.stopScan()))
+  func stopScanning(completion: @escaping (Result<Void, Error>) -> Void) {
+    completion(Result.success(beaconManager.stopScanning()))
   }
 
   public static func register(with registrar: FlutterPluginRegistrar) {

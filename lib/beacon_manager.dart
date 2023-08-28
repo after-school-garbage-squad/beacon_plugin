@@ -15,19 +15,19 @@ class BeaconManager {
 
   /// Starts scanning beacons.
   /// TODO: Android: beaconManager.startMonitoring(Region region)
-  /// iOS: locationManager.startScan()
-  Future<void> startScan() async {
+  /// iOS: locationManager.startScanning()
+  Future<void> startScanning() async {
     if (_isScanning) throw Exception('Already monitoring');
-    await api.startScan();
+    await api.startScanning();
     _isScanning = true;
   }
 
   /// Stops scanning beacons.
   /// TODO: Android: beaconManager.stopMonitoring(Region region)
-  /// iOS: locationManager.stopScan()
-  Future<void> stopScan() async {
+  /// iOS: locationManager.stopScanning()
+  Future<void> stopScanning() async {
     if (!_isScanning) throw Exception('Not monitoring');
-    await api.stopScan();
+    await api.stopScanning();
     _isScanning = false;
   }
 

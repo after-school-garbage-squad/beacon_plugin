@@ -70,8 +70,8 @@ data class BeaconData (
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface BeaconManagerApi {
   fun setBeaconServiceUUIDs(uuid: List<String>, callback: (Result<Unit>) -> Unit)
-  fun startScan(callback: (Result<Unit>) -> Unit)
-  fun stopScan(callback: (Result<Unit>) -> Unit)
+  fun startScanning(callback: (Result<Unit>) -> Unit)
+  fun stopScanning(callback: (Result<Unit>) -> Unit)
 
   companion object {
     /** The codec used by BeaconManagerApi. */
@@ -101,10 +101,10 @@ interface BeaconManagerApi {
         }
       }
       run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.startScan", codec)
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.startScanning", codec)
         if (api != null) {
           channel.setMessageHandler { _, reply ->
-            api.startScan() { result: Result<Unit> ->
+            api.startScanning() { result: Result<Unit> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(wrapError(error))
@@ -118,10 +118,10 @@ interface BeaconManagerApi {
         }
       }
       run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.stopScan", codec)
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.stopScanning", codec)
         if (api != null) {
           channel.setMessageHandler { _, reply ->
-            api.stopScan() { result: Result<Unit> ->
+            api.stopScanning() { result: Result<Unit> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(wrapError(error))

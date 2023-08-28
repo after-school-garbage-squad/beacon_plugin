@@ -72,13 +72,13 @@ class BeaconManager(
         beaconServiceUUIDs = uuid
     }
 
-    fun startScan() {
-        Log.d(TAG, "startScan")
+    fun startScanning() {
+        Log.d(TAG, "startScanning")
         beaconManager.startRangingBeacons(region)
     }
 
-    fun stopScan() {
-        Log.d(TAG, "stopScan")
+    fun stopScanning() {
+        Log.d(TAG, "stopScanning")
         beaconManager.stopRangingBeacons(region)
     }
 

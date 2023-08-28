@@ -80,17 +80,17 @@ class BeaconPlugin: FlutterPlugin,
     }
   }
 
-  override fun startScan(callback: (Result<Unit>) -> Unit) {
+  override fun startScanning(callback: (Result<Unit>) -> Unit) {
     try {
-      callback(Result.success(beaconManager.startScan()))
+      callback(Result.success(beaconManager.startScanning()))
     } catch (e: RemoteException) {
       callback(Result.failure(e))
     }
   }
 
-  override fun stopScan(callback: (Result<Unit>) -> Unit) {
+  override fun stopScanning(callback: (Result<Unit>) -> Unit) {
     try {
-      callback(Result.success(beaconManager.stopScan()))
+      callback(Result.success(beaconManager.stopScanning()))
     } catch (e: RemoteException) {
       callback(Result.failure(e))
     }

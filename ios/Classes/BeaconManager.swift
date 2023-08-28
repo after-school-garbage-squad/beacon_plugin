@@ -17,21 +17,21 @@ class BeaconManager: NSObject, ObservableObject, CBCentralManagerDelegate {
     self.beaconServiceUUIDs = beaconServiceUUIDs.map { CBUUID(string: $0) }
   }
 
-  func startScan() {
+  func startScanning() {
     wantScan = true
     if centralManager.state == CBManagerState.poweredOn {
       centralManager.scanForPeripherals(withServices: beaconServiceUUIDs, options: nil)
     }
   }
 
-  func stopScan() {
-    centralManager.stopScan()
+  func stopScanning() {
+    centralManager.stopScanning()
   }
 
   func centralManagerDidUpdateState(_ central: CBCentralManager) {
     if central.state == CBManagerState.poweredOn {
       if wantScan {
-        startScan()
+        startScanning()
       }
     }
   }
