@@ -1,201 +1,61 @@
-/*
- * Source: https://github.com/after-school-garbage-squad/poc-for-repaint/blob/main/BLE%20test/BeaconView.swift
- */
-
+import CoreBluetooth
 import CoreLocation
-import UserNotifications
+import Flutter
 
-class BeaconManager: NSObject, ObservableObject, CLLocationManagerDelegate {
-  let constraint = CLBeaconIdentityConstraint(
-    uuid: UUID(uuidString: "d0d2ce24-9efc-11e5-82c4-1c6a7a17ef38")!)
+class BeaconManager: NSObject, ObservableObject, CBCentralManagerDelegate {
+  var beaconServiceUUIDs: [CBUUID] = []
+  var wantScan = false
 
-  var customLocationManager: CLLocationManager!
-  var customBeaconRegion: CLBeaconRegion!
-  var beaconDatas: Array<BeaconData> = Array<BeaconData>()
+  var centralManager: CBCentralManager!
 
   override init() {
     super.init()
-
-    customLocationManager = CLLocationManager()
-    customLocationManager.delegate = self
-    customLocationManager.desiredAccuracy = kCLLocationAccuracyBest
-    customLocationManager.distanceFilter = 1
-
-    customLocationManager.allowsBackgroundLocationUpdates = true
-
-    customLocationManager.pausesLocationUpdatesAutomatically = false
-
-    let status = customLocationManager.authorizationStatus
-    print("CLAuthorizedStatus: \(status.rawValue)")
-    if status == .notDetermined {
-      customLocationManager.requestAlwaysAuthorization()
-    }
-    beaconDatas = Array<BeaconData>()
-
-    customLocationManager.startUpdatingLocation()
-
-    customLocationManager.requestWhenInUseAuthorization()
+    centralManager = CBCentralManager(delegate: self, queue: nil)
   }
 
-  public func startCustomMonitoring() {
-    let identifierStr: String = "abcde1"
-    customBeaconRegion = CLBeaconRegion(uuid: constraint.uuid, identifier: identifierStr)
-    customBeaconRegion.notifyEntryStateOnDisplay = false
-    customBeaconRegion.notifyOnEntry = true
-    customBeaconRegion.notifyOnExit = true
-    customLocationManager.startMonitoring(for: customBeaconRegion)
+  func setBeaconServiceUUIDs(beaconServiceUUIDs: [String]) {
+    self.beaconServiceUUIDs = beaconServiceUUIDs.map { CBUUID(string: $0) }
   }
 
-  public func stopCustomMonitoring() {
-    customLocationManager.stopMonitoring(for: customBeaconRegion)
-  }
-    
-  public func startRanging() {
-    customLocationManager.startRangingBeacons(satisfying: constraint)
-  }
-    
-  public func stopRanging() {
-    customLocationManager.stopRangingBeacons(satisfying: constraint)
-  }
-
-  func locationManager(
-    _ manager: CLLocationManager,
-    didChangeAuthorization status: CLAuthorizationStatus
-  ) {
-    print("didChangeAuthorizationStatus")
-
-    switch status {
-    case .notDetermined:
-      print("not determined")
-      break
-    case .restricted:
-      print("restricted")
-      break
-    case .denied:
-      print("denied")
-      break
-    case .authorizedAlways:
-      print("authorizedAlways")
-      startCustomMonitoring()
-      break
-    case .authorizedWhenInUse:
-      print("authorizedWhenInUse")
-      startCustomMonitoring()
-      break
-    @unknown default:
-      print("def")
-      break
+  func startScanning() {
+    wantScan = true
+    if centralManager.state == CBManagerState.poweredOn {
+      centralManager.scanForPeripherals(withServices: beaconServiceUUIDs, options: nil)
     }
   }
 
-  func locationManager(
-    _ manager: CLLocationManager,
-    didStartMonitoringFor region: CLRegion
-  ) {
-    manager.requestState(for: region)
+  func stopScanning() {
+    centralManager.stopScan()
   }
 
-  func locationManager(
-    _ manager: CLLocationManager,
-    didDetermineState state: CLRegionState,
-    for region: CLRegion
-  ) {
-    switch state {
-    case .inside:
-      print("iBeacon inside")
-      // manager.startRangingBeacons(satisfying: constraint)
-      sendNotification(title: "inside", body: region.identifier)
-      break
-    case .outside:
-      print("iBeacon outside")
-      sendNotification(title: "outside", body: region.identifier)
-      break
-    case .unknown:
-      print("iBeacon unknown")
-      break
-    }
-  }
-
-  func locationManager(
-    _ manager: CLLocationManager,
-    didRangeBeacons beacons: [CLBeacon],
-    in region: CLBeaconRegion
-  ) {
-    if beacons.count > 0 {
-      for i in 0..<beacons.count {
-        let beacon = beacons[i]
-        let beaconUUID = beacon.uuid
-        let minorID = beacon.minor
-        let majorID = beacon.major
-        let rssi = beacon.rssi
-        var proximity = ""
-
-        switch beacon.proximity {
-        case CLProximity.unknown:
-          print("Proximity: Unknown")
-          proximity = "Unknown"
-          break
-        case CLProximity.far:
-          print("Proximity: Far")
-          proximity = "Far"
-          break
-        case CLProximity.near:
-          print("Proximity: Near")
-          proximity = "Near"
-          break
-        case CLProximity.immediate:
-          print("Proximity: Immediate")
-          proximity = "Immediate"
-          break
-        @unknown default:
-          break
-        }
-
-        var customBeaconDetails = "Major: \(majorID) "
-        customBeaconDetails += "Minor: \(minorID) "
-        customBeaconDetails += "Proximity:\(proximity) "
-        customBeaconDetails += "RSSI:\(rssi)"
-        print(customBeaconDetails)
-        beaconDatas.append(
-          BeaconData(
-            uuid: beacon.uuid.uuidString,
-            major: beacon.major.stringValue,
-            minor: beacon.minor.stringValue,
-            rssi: Int64(beacon.rssi),
-            proximity: Int64(beacon.proximity.rawValue),
-            hwid: nil
-          )
-        )
-        sendNotification(title: proximity, body: customBeaconDetails)
-        // label1.text = proximity
+  func centralManagerDidUpdateState(_ central: CBCentralManager) {
+    if central.state == CBManagerState.poweredOn {
+      if wantScan {
+        startScanning()
       }
     }
   }
 
-  func locationManager(
-    _ manager: CLLocationManager,
-    didEnterRegion region: CLRegion
+  func centralManager(
+    _ central: CBCentralManager, didDiscover peripheral: CBPeripheral,
+    advertisementData: [String: Any], rssi rssi: NSNumber
   ) {
-    print("didEnterRegion: iBeacon found")
-    manager.startRangingBeacons(satisfying: constraint)
-  }
+    var beaconDataList: [BeaconData] = []
+    if let serviceData = advertisementData[CBAdvertisementDataServiceDataKey] as? [CBUUID: Data] {
+      for (serviceUUID, data) in serviceData {
+        let frameType = data[0]
+        for uuid in beaconServiceUUIDs {
+          if serviceUUID == uuid && frameType == 0x02 {
+            let hwid = data.subdata(in: 1..<6)
+            let hwidStr = hwid.map { String(format: "%02X", $0) }.joined()
+            if let beaconData = BeaconData.fromList([uuid.uuidString, hwidStr, rssi]) {
+              beaconDataList.append(beaconData)
+            }
+          }
+        }
+      }
+    }
 
-  func locationManager(
-    _ manager: CLLocationManager,
-    didExitRegion region: CLRegion
-  ) {
-    print("didExitRegion: iBeacon lost")
-    manager.stopRangingBeacons(satisfying: constraint)
-  }
-    
-  func sendNotification(title: String, body: String, interval: Double = 1) {
-    let content = UNMutableNotificationContent()
-    content.title = title
-    content.body = body
-
-    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
-    let request = UNNotificationRequest(identifier: "notification02", content: content, trigger: trigger)
-
-    UNUserNotificationCenter.current().add(request)
+    BeaconPlugin.flutterBeaconApi?.onScanned(beaconDataList: beaconDataList) {}
   }
 }

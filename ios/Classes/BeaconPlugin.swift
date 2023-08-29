@@ -1,45 +1,24 @@
 import Flutter
-import UIKit
 
-public class BeaconPlugin : NSObject, FlutterPlugin, BeaconManagerApi {
-  let beaconManagaer: BeaconManager = BeaconManager()
-  let bluetoothManager: BluetoothManager = BluetoothManager()
-  let beaconDatas: Dictionary<String, BeaconData> = Dictionary<String, BeaconData>()
+public class BeaconPlugin: NSObject, FlutterPlugin, BeaconManagerApi {
 
-  func startMonitoring(completion: @escaping (Result<Void, Error>) -> Void) {
-    completion(Result.success(beaconManagaer.startCustomMonitoring()))
+  let beaconManager = BeaconManager()
+  static var flutterBeaconApi: FlutterBeaconApi?
+
+  func setBeaconServiceUUIDs(uuid: [String], completion: @escaping (Result<Void, Error>) -> Void) {
+    completion(Result.success(beaconManager.setBeaconServiceUUIDs(beaconServiceUUIDs: uuid)))
   }
-  
-  func stopMonitoring(completion: @escaping (Result<Void, Error>) -> Void) {
-    completion(Result.success(beaconManagaer.stopCustomMonitoring()))
+
+  func startScanning(completion: @escaping (Result<Void, Error>) -> Void) {
+    completion(Result.success(beaconManager.startScanning()))
   }
-  
-  func getMonitoredRegion(completion: @escaping (Result<RegionData?, Error>) -> Void) {
-    return
+
+  func stopScanning(completion: @escaping (Result<Void, Error>) -> Void) {
+    completion(Result.success(beaconManager.stopScanning()))
   }
-  
-  func startRanging(completion: @escaping (Result<Void, Error>) -> Void) {
-    completion(Result.success(beaconManagaer.startRanging()))
-  }
-  
-  func stopRanging(completion: @escaping (Result<Void, Error>) -> Void) {
-    completion(Result.success(beaconManagaer.stopRanging()))
-  }
-  
-  func getRangedBeacons(completion: @escaping (Result<[BeaconData?]?, Error>) -> Void) {
-    let beaconDatas = beaconManagaer.beaconDatas
-      completion(Result.success(beaconDatas))
-  }
-  
-  func startForegroundService(completion: @escaping (Result<Void, Error>) -> Void) {
-    return
-  }
-  
-  func stopForegroundService(completion: @escaping (Result<Void, Error>) -> Void) {
-    return
-  }
-    
+
   public static func register(with registrar: FlutterPluginRegistrar) {
     BeaconManagerApiSetup.setUp(binaryMessenger: registrar.messenger(), api: BeaconPlugin.init())
+    flutterBeaconApi = FlutterBeaconApi(binaryMessenger: registrar.messenger())
   }
 }

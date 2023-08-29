@@ -1,0 +1,3 @@
+excluded:
+  - ios/Classes/Pigeon.swift
+  - example/*
