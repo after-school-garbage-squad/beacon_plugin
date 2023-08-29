@@ -12,7 +12,7 @@ pubspec.yamlに以下を記述
 dependencies:
   flutter_sample_plugin:
     git:
-      url: git@github.com:xxxxx/flutter_sample_plugin.git
+      url: https://github.com/after-school-garbage-squad/beacon_plugin.git
       ref: HEAD
 
 ```
