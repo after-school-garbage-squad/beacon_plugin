@@ -2,7 +2,7 @@ import Flutter
 
 public class BeaconPlugin: NSObject, FlutterPlugin, BeaconManagerApi {
 
-  let beaconManager = BeaconManager()
+  let beaconManager:BeaconManager = BeaconManager()
   static var flutterBeaconApi: FlutterBeaconApi?
 
   func setBeaconServiceUUIDs(uuid: [String], completion: @escaping (Result<Void, Error>) -> Void) {

@@ -6,11 +6,10 @@ class BeaconManager: NSObject, ObservableObject, CBCentralManagerDelegate {
   var beaconServiceUUIDs: [CBUUID] = []
   var wantScan = false
 
-  var centralManager: CBCentralManager!
+  var centralManager: CBCentralManager?
 
   override init() {
     super.init()
-    centralManager = CBCentralManager(delegate: self, queue: nil)
   }
 
   func setBeaconServiceUUIDs(beaconServiceUUIDs: [String]) {
@@ -19,13 +18,16 @@ class BeaconManager: NSObject, ObservableObject, CBCentralManagerDelegate {
 
   func startScan() {
     wantScan = true
-    if centralManager.state == CBManagerState.poweredOn {
-      centralManager.scanForPeripherals(withServices: beaconServiceUUIDs, options: nil)
+    if(centralManager == nil) {
+      centralManager = CBCentralManager(delegate: self, queue: nil)
+    }
+    if centralManager?.state == CBManagerState.poweredOn {
+      centralManager?.scanForPeripherals(withServices: beaconServiceUUIDs, options: nil)
     }
   }
 
   func stopScan() {
-    centralManager.stopScan()
+    centralManager?.stopScan()
   }
 
   func centralManagerDidUpdateState(_ central: CBCentralManager) {
