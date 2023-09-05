@@ -6,7 +6,6 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.os.RemoteException
-import android.util.Log
 import androidx.annotation.RequiresApi
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -31,7 +30,6 @@ class BeaconPlugin: FlutterPlugin,
   }
 
   override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-    Log.d("BeaconPlugin", "onAttachedToEngine")
     context = binding.applicationContext
 
     flutterBeaconApi = FlutterBeaconApi(binding.binaryMessenger)
@@ -44,7 +42,6 @@ class BeaconPlugin: FlutterPlugin,
   }
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-    Log.d("BeaconPlugin", "onDetachedFromEngine")
     BeaconManagerApi.setUp(
       binaryMessenger = binding.binaryMessenger,
       api = null
@@ -52,24 +49,20 @@ class BeaconPlugin: FlutterPlugin,
   }
 
   override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-    Log.d("BeaconPlugin", "onMethodCall")
+
   }
 
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-    Log.d("BeaconPlugin", "onAttachedToActivity")
     activity = binding.activity
   }
 
   override fun onDetachedFromActivityForConfigChanges() {
-    Log.d("BeaconPlugin", "onDetachedFromActivityForConfigChanges")
   }
 
   override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-    Log.d("BeaconPlugin", "onReattachedToActivityForConfigChanges")
   }
 
   override fun onDetachedFromActivity() {
-    Log.d("BeaconPlugin", "onDetachedFromActivity")
   }
 
   override fun setBeaconServiceUUIDs(uuid: List<String>, callback: (Result<Unit>) -> Unit) {

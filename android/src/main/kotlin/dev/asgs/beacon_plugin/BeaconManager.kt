@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
-import android.util.Log
 import androidx.annotation.RequiresApi
 import org.altbeacon.beacon.Beacon
 import org.altbeacon.beacon.BeaconManager
@@ -41,7 +40,6 @@ class BeaconManager(
                         hwid,
                         rssi.toDouble()
                     )
-                    Log.d(TAG, "NonBeaconLeScan.  Device=$device rssi=$rssi hwid=$hwid")
                     handler.post {
                         BeaconPlugin.flutterBeaconApi.onScanned(beaconData) {}
                     }
@@ -78,7 +76,6 @@ class BeaconManager(
     }
 
     fun startScan() {
-        Log.d(TAG, "startScan")
         isScanning = true
         val regions = beaconServiceUUIDs?.map {
             Region(
@@ -94,7 +91,6 @@ class BeaconManager(
     }
 
     fun stopScan() {
-        Log.d(TAG, "stopScan")
         isScanning = false
         val regions = beaconServiceUUIDs?.map {
             Region(
