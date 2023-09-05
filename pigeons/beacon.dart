@@ -12,13 +12,13 @@ abstract class BeaconManagerApi {
   void setBeaconServiceUUIDs(List<String> uuid);
 
   @async
-  void startScanning();
+  void startScan();
 
   @async
-  void stopScanning();
+  void stopScan();
 }
 
 @FlutterApi()
 abstract class FlutterBeaconApi {
-  void onScanned(List<BeaconData> beaconDataList);
+  void onScanned(BeaconData beaconData);
 }

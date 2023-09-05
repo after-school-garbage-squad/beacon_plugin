@@ -43,7 +43,7 @@ class BeaconManager(
                     )
                     Log.d(TAG, "NonBeaconLeScan.  Device=$device rssi=$rssi hwid=$hwid")
                     handler.post {
-                        BeaconPlugin.flutterBeaconApi.onScanned(listOf(beaconData)) {}
+                        BeaconPlugin.flutterBeaconApi.onScanned(beaconData) {}
                     }
                 }
             }
@@ -72,13 +72,13 @@ class BeaconManager(
     fun setBeaconServiceUUIDs(uuid: List<String>) {
         beaconServiceUUIDs = uuid
         if(isScanning) {
-            stopScanning()
-            startScanning()
+            stopScan()
+            startScan()
         }
     }
 
-    fun startScanning() {
-        Log.d(TAG, "startScanning")
+    fun startScan() {
+        Log.d(TAG, "startScan")
         isScanning = true
         val regions = beaconServiceUUIDs?.map {
             Region(
@@ -93,8 +93,8 @@ class BeaconManager(
         }
     }
 
-    fun stopScanning() {
-        Log.d(TAG, "stopScanning")
+    fun stopScan() {
+        Log.d(TAG, "stopScan")
         isScanning = false
         val regions = beaconServiceUUIDs?.map {
             Region(

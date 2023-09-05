@@ -6,7 +6,7 @@ Beacon scanning library for Re:paint app on iOS / Android
 
 ### プラグインを追加
 
-pubspec.yamlに以下を記述
+pubspec.yaml に以下を記述
 
 ```pubspec.yaml
 dependencies:
@@ -27,7 +27,7 @@ flutter pub upgrade
 
 #### 必要な権限
 
-必要な権限がiOSとAndroidで違います。
+必要な権限が iOS と Android で違います。
 
 共通
 
@@ -36,21 +36,21 @@ flutter pub upgrade
 - Permission.locationWhenInUse
 - Permission.locationAlways
 
-Androidのみ
+Android のみ
 
 - Permission.bluetoothScan
 
-iOSのみ
+iOS のみ
 
 - 特になし
 
 #### 実行
 
-bluetoothをONにした状態で使用してください。
+bluetooth を ON にした状態で使用してください。
 
 ##### スキーマ
 
-BeaconDataとして、以下が定義されています。
+BeaconData として、以下が定義されています。
 
 ```dart
 class BeaconData {
@@ -65,11 +65,8 @@ class BeaconData {
 コールバック用の関数を定義
 
 ```dart
-void onScanned(List<BeaconData?> beaconDataList) {
-  final List<BeaconData> bl = beaconDataList.whereType<BeaconData>().toList();
-  for (var element in bl) {
-    print(element.hwid)
-  }
+void onScanned(BeaconData beaconData) {
+  print(beaconData.hwid);
 }
 ```
 
@@ -85,12 +82,12 @@ beaconManager.setBeaconServiceUUIDs(["FE6F"]);
 FlutterBeaconApi.setup(FlutterBeaconApiImpl(onScanned));
 
 // スキャン開始
-beaconManager.startScanning();
+beaconManager.startScan();
 
 ```
 
 スキャンを停止
 
 ```dart
-beaconManager.stopScanning();
+beaconManager.stopScan();
 ```
