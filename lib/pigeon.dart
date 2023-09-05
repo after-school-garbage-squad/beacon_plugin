@@ -72,10 +72,9 @@ class BeaconManagerApi {
     }
   }
 
-  Future<void> startScanning() async {
+  Future<void> startScan() async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.startScanning',
-        codec,
+        'dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.startScan', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
@@ -94,9 +93,9 @@ class BeaconManagerApi {
     }
   }
 
-  Future<void> stopScanning() async {
+  Future<void> stopScan() async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.stopScanning', codec,
+        'dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.stopScan', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {

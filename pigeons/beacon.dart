@@ -12,10 +12,10 @@ abstract class BeaconManagerApi {
   void setBeaconServiceUUIDs(List<String> uuid);
 
   @async
-  void startScanning();
+  void startScan();
 
   @async
-  void stopScanning();
+  void stopScan();
 }
 
 @FlutterApi()

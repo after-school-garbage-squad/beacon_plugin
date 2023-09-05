@@ -63,8 +63,8 @@ struct BeaconData {
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
 protocol BeaconManagerApi {
   func setBeaconServiceUUIDs(uuid: [String], completion: @escaping (Result<Void, Error>) -> Void)
-  func startScanning(completion: @escaping (Result<Void, Error>) -> Void)
-  func stopScanning(completion: @escaping (Result<Void, Error>) -> Void)
+  func startScan(completion: @escaping (Result<Void, Error>) -> Void)
+  func stopScan(completion: @escaping (Result<Void, Error>) -> Void)
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
@@ -89,10 +89,10 @@ class BeaconManagerApiSetup {
     } else {
       setBeaconServiceUUIDsChannel.setMessageHandler(nil)
     }
-    let startScanningChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.startScanning", binaryMessenger: binaryMessenger)
+    let startScanChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.startScan", binaryMessenger: binaryMessenger)
     if let api = api {
-      startScanningChannel.setMessageHandler { _, reply in
-        api.startScanning() { result in
+      startScanChannel.setMessageHandler { _, reply in
+        api.startScan() { result in
           switch result {
             case .success:
               reply(wrapResult(nil))
@@ -102,12 +102,12 @@ class BeaconManagerApiSetup {
         }
       }
     } else {
-      startScanningChannel.setMessageHandler(nil)
+      startScanChannel.setMessageHandler(nil)
     }
-    let stopScanningChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.stopScanning", binaryMessenger: binaryMessenger)
+    let stopScanChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.beacon_plugin.BeaconManagerApi.stopScan", binaryMessenger: binaryMessenger)
     if let api = api {
-      stopScanningChannel.setMessageHandler { _, reply in
-        api.stopScanning() { result in
+      stopScanChannel.setMessageHandler { _, reply in
+        api.stopScan() { result in
           switch result {
             case .success:
               reply(wrapResult(nil))
@@ -117,7 +117,7 @@ class BeaconManagerApiSetup {
         }
       }
     } else {
-      stopScanningChannel.setMessageHandler(nil)
+      stopScanChannel.setMessageHandler(nil)
     }
   }
 }

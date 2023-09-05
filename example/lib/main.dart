@@ -101,13 +101,12 @@ class _MyAppState extends State<MyApp> {
                                     child: FilledButton.tonal(
                                         onPressed: () async {
                                           if (_isScanning) {
-                                            await _beaconManager.stopScanning();
+                                            await _beaconManager.stopScan();
                                             setState(() {
                                               _isScanning = false;
                                             });
                                           } else {
-                                            await _beaconManager
-                                                .startScanning();
+                                            await _beaconManager.startScan();
                                             setState(() {
                                               _isScanning = true;
                                             });
