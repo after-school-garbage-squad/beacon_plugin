@@ -20,5 +20,5 @@ abstract class BeaconManagerApi {
 
 @FlutterApi()
 abstract class FlutterBeaconApi {
-  void onScanned(List<BeaconData> beaconDataList);
+  void onScanned(BeaconData beaconData);
 }

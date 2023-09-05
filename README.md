@@ -65,11 +65,8 @@ class BeaconData {
 コールバック用の関数を定義
 
 ```dart
-void onScanned(List<BeaconData?> beaconDataList) {
-  final List<BeaconData> bl = beaconDataList.whereType<BeaconData>().toList();
-  for (var element in bl) {
-    print(element.hwid)
-  }
+void onScanned(BeaconData beaconData) {
+  print(beaconData.hwid);
 }
 ```
 

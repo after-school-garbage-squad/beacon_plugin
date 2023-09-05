@@ -43,7 +43,7 @@ class BeaconManager(
                     )
                     Log.d(TAG, "NonBeaconLeScan.  Device=$device rssi=$rssi hwid=$hwid")
                     handler.post {
-                        BeaconPlugin.flutterBeaconApi.onScanned(listOf(beaconData)) {}
+                        BeaconPlugin.flutterBeaconApi.onScanned(beaconData) {}
                     }
                 }
             }

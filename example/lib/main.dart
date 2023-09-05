@@ -56,18 +56,15 @@ class _MyAppState extends State<MyApp> {
     // _beaconManager.startForegroundService();
   }
 
-  void onScanned(List<BeaconData?> beaconDataList) {
-    final List<BeaconData> bl = beaconDataList.whereType<BeaconData>().toList();
-    for (var element in bl) {
-      if (element.hwid != null) {
-        _beaconDict[element.hwid!] = BeaconVisibleData(
-            beaconData: element,
-            lastScanned: DateTime.now(),
-            rssiHistory: [
-              element.rssi!,
-              ...?_beaconDict[element.hwid!]?.rssiHistory
-            ].take(20).toList());
-      }
+  void onScanned(BeaconData beaconData) {
+    if (beaconData.hwid != null) {
+      _beaconDict[beaconData.hwid!] = BeaconVisibleData(
+          beaconData: beaconData,
+          lastScanned: DateTime.now(),
+          rssiHistory: [
+            beaconData.rssi!,
+            ...?_beaconDict[beaconData.hwid!]?.rssiHistory
+          ].take(20).toList());
     }
 
     _beaconDataListController.setBeaconDataList(_beaconDict.values.toList());
