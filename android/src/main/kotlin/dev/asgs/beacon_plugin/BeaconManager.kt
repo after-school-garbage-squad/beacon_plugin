@@ -76,6 +76,7 @@ class BeaconManager(
     }
 
     fun startScan() {
+        if(isScanning) return
         isScanning = true
         val regions = beaconServiceUUIDs?.map {
             Region(
@@ -91,6 +92,7 @@ class BeaconManager(
     }
 
     fun stopScan() {
+        if(!isScanning) return
         isScanning = false
         val regions = beaconServiceUUIDs?.map {
             Region(
