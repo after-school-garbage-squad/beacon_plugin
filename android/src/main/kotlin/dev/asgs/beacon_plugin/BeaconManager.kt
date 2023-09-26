@@ -49,10 +49,10 @@ class BeaconManager(
         beaconManager.foregroundBetweenScanPeriod = (foregroundBetweenScanPeriod ?: 0).toLong()
         beaconManager.foregroundScanPeriod = (foregroundScanPeriod ?: 1100).toLong()
 
-        if (isBackgroundEnabled == true) {
+        beaconManager.backgroundBetweenScanPeriod = (backgroundBetweenScanPeriod ?: 0).toLong()
+        beaconManager.backgroundScanPeriod = (backgroundScanPeriod ?: 1100).toLong()
+        if (isBackgroundEnabled == true && !beaconManager.scheduledScanJobsEnabled) {
             beaconManager.setEnableScheduledScanJobs(isScheduledScanJobEnabled ?: false)
-            beaconManager.backgroundBetweenScanPeriod = (backgroundBetweenScanPeriod ?: 0).toLong()
-            beaconManager.backgroundScanPeriod = (backgroundScanPeriod ?: 1100).toLong()
         }
     }
 
