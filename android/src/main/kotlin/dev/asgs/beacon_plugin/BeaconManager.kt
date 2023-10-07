@@ -69,10 +69,6 @@ class BeaconManager(
 
     fun setBeaconServiceUUIDs(uuid: List<String>) {
         beaconServiceUUIDs = uuid
-        if(isScanning) {
-            stopScan()
-            startScan()
-        }
     }
 
     fun startScan() {
