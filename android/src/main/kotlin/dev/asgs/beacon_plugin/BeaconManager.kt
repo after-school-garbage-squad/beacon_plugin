@@ -99,7 +99,7 @@ class BeaconManager(
             )
         } ?: listOf()
         for(region in regions) {
-            beaconManager.startRangingBeacons(region)
+            beaconManager.stopRangingBeacons(region)
         }
     }
 
