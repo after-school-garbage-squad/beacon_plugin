@@ -74,6 +74,7 @@ class BeaconManager(
     fun startScan() {
         if(isScanning) return
         isScanning = true
+        beaconManager.setBackgroundModeInternal(isBackgroundEnabled ?: false)
         val regions = beaconServiceUUIDs?.map {
             Region(
                 it,
