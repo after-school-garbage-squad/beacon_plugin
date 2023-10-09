@@ -36,7 +36,7 @@ class BeaconManager(
                 val hwid = convertHwid(scanRecord)
                 if (hwid != null) {
                     val beaconData = BeaconData(
-                        device.address,
+                        "FE6F",
                         hwid,
                         rssi.toDouble()
                     )
